@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="author" content="João Pedro Fernandes Semedo">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a1628">
+<title>Eletrostática • João Pedro Fernandes Semedo</title>
+<style>
+  :root {
+    --azul-profundo: #0a1628;
+    --azul-catedra: #1a365d;
+    --ouro: #d4a017;
+    --verde: #2f855a;
+    --vermelho: #c53030;
+    --cinza: #e2e8f0;
+    --branco: #f7fafc;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #0a1628 0%, #1a365d 100%);
+    color: #1a202c;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  header {
+    background: var(--azul-profundo);
+    color: white;
+    padding: 1rem 1rem;
+    text-align: center;
+    border-bottom: 4px solid var(--ouro);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  header h1 { font-size: 1.5rem; letter-spacing: 0.5px; }
+  header .subtitulo { font-size: 0.85rem; opacity: 0.85; margin-top: 0.25rem; }
+  header .autor { font-size: 0.8rem; color: var(--ouro); margin-top: 0.3rem; font-weight: 600; }
+  nav {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 0.4rem;
+    padding: 0.7rem 0.6rem;
+    background: #0f2744;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  nav button {
+    background: transparent;
+    border: 1px solid #4a5568;
+    color: white;
+    padding: 0.55rem 0.85rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 40px;
+  }
+  nav button:hover, nav button.active {
+    background: var(--ouro);
+    color: #0a1628;
+    border-color: var(--ouro);
+  }
+  main { max-width: 960px; margin: 0 auto; padding: 1rem; }
+  section {
+    display: none;
+    background: white;
+    border-radius: 12px;
+    padding: 1.3rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  }
+  section.active { display: block; animation: fadeIn 0.35s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  h2 {
+    color: var(--azul-catedra);
+    border-bottom: 3px solid var(--ouro);
+    padding-bottom: 0.35rem;
+    margin-bottom: 1rem;
+    font-size: 1.35rem;
+  }
+  h3 { color: var(--azul-catedra); margin: 1.3rem 0 0.5rem; font-size: 1.1rem; }
+  h4 { color: #2d3748; margin: 0.9rem 0 0.35rem; }
+  p, li { margin-bottom: 0.55rem; font-size: 0.95rem; }
+  ul, ol { margin-left: 1.2rem; margin-bottom: 0.9rem; }
+  .pilares {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.8rem;
+    margin: 1.2rem 0;
+  }
+  .pilar {
+    background: #edf2f7;
+    border-left: 5px solid var(--ouro);
+    padding: 0.9rem;
+    border-radius: 0 8px 8px 0;
+  }
+  .pilar h4 { margin-top: 0; color: var(--azul-catedra); font-size: 0.95rem; }
+  .pilar p { font-size: 0.88rem; }
+  .objetivo {
+    background: #ebf8ff;
+    border: 1px solid #90cdf4;
+    padding: 0.9rem 1rem;
+    border-radius: 8px;
+    margin: 0.9rem 0;
+    font-size: 0.95rem;
+  }
+  .exemplo {
+    background: #f0fff4;
+    border-left: 4px solid var(--verde);
+    padding: 0.9rem;
+    margin: 0.9rem 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.93rem;
+  }
+  .desafio {
+    background: #fffaf0;
+    border: 1px solid #f6ad55;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+  }
+  .desafio h4 { color: #c05621; }
+  .exercicio {
+    background: #f7fafc;
+    border: 1px solid #cbd5e0;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0.9rem 0;
+  }
+  .btn {
+    background: var(--azul-catedra);
+    color: white;
+    border: none;
+    padding: 0.65rem 1.1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.92rem;
+    margin: 0.25rem 0.25rem 0.25rem 0;
+    transition: background 0.2s;
+    min-height: 42px;
+    touch-action: manipulation;
+  }
+  .btn:hover, .btn:active { background: #2c5282; }
+  .btn-ouro { background: var(--ouro); color: #0a1628; }
+  .btn-ouro:hover, .btn-ouro:active { background: #b8860b; }
+  .btn-verde { background: var(--verde); }
+  .btn-vermelho { background: var(--vermelho); }
+  .feedback {
+    margin-top: 0.7rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.92rem;
+  }
+  .feedback.certo { background: #c6f6d5; color: #22543d; display: block; }
+  .feedback.errado { background: #fed7d7; color: #742a2a; display: block; }
+  .canvas-wrap {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    margin: 0.8rem 0;
+  }
+  canvas {
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+    border: 2px solid #cbd5e0;
+    border-radius: 8px;
+    background: #1a202c;
+    touch-action: none;
+  }
+  .controles {
+    text-align: center;
+    margin: 0.7rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+  .controles label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.9rem;
+    padding: 0.3rem;
+  }
+  .tabela { width: 100%; border-collapse: collapse; margin: 0.9rem 0; font-size: 0.88rem; }
+  .tabela th, .tabela td { border: 1px solid #cbd5e0; padding: 0.5rem; text-align: left; }
+  .tabela th { background: var(--azul-catedra); color: white; }
+  .tabela tr:nth-child(even) { background: #edf2f7; }
+  .destaque {
+    background: #fefcbf;
+    padding: 0.12rem 0.35rem;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+  .formula {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 0.7rem 1rem;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    text-align: center;
+    margin: 0.9rem 0;
+    font-size: 1rem;
+    overflow-x: auto;
+    word-break: break-word;
+  }
+  footer {
+    text-align: center;
+    color: #a0aec0;
+    padding: 1.5rem 1rem;
+    font-size: 0.8rem;
+  }
+  .eletroscopio-svg { max-width: 240px; width: 100%; margin: 1rem auto; display: block; }
+  input[type="number"], select {
+    padding: 0.5rem;
+    border: 1px solid #cbd5e0;
+    border-radius: 4px;
+    width: 90px;
+    font-size: 1rem;
+    min-height: 40px;
+  }
+  .logica-box {
+    background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+    border: 2px solid #38b2ac;
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin: 1.2rem 0;
+  }
+  .logica-box h3 { margin-top: 0; color: #234e52; font-size: 1.05rem; }
+  .passo-ped {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin: 0.7rem 0;
+    padding: 0.7rem;
+    background: white;
+    border-radius: 8px;
+    border-left: 5px solid #38b2ac;
+  }
+  .passo-num {
+    background: #38b2ac;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+  }
+  .aviso {
+    background: #fefcbf;
+    border: 1px solid #d69e2e;
+    padding: 0.75rem 0.9rem;
+    border-radius: 6px;
+    margin: 0.9rem 0;
+    font-size: 0.92rem;
+  }
+  /* Mobile optimizations */
+  @media (max-width: 640px) {
+    header { padding: 0.8rem 0.6rem; }
+    header h1 { font-size: 1.25rem; }
+    header .subtitulo { font-size: 0.78rem; }
+    header .autor { font-size: 0.75rem; }
+    main { padding: 0.7rem; }
+    section { padding: 1rem; border-radius: 10px; }
+    h2 { font-size: 1.2rem; }
+    h3 { font-size: 1.02rem; }
+    .pilares { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .pilar { padding: 0.7rem; }
+    nav { padding: 0.55rem 0.4rem; gap: 0.3rem; }
+    nav button { padding: 0.5rem 0.7rem; font-size: 0.78rem; min-height: 38px; }
+    .btn { padding: 0.6rem 0.9rem; font-size: 0.88rem; min-height: 40px; }
+    .formula { font-size: 0.9rem; padding: 0.6rem 0.7rem; }
+    .tabela { font-size: 0.8rem; }
+    .tabela th, .tabela td { padding: 0.4rem; }
+    .controles { gap: 0.35rem; }
+    input[type="number"] { width: 80px; }
+  }
+  @media (max-width: 400px) {
+    .pilares { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.15rem; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>ELETROSTÁTICA</h1>
+  <div class="subtitulo">Aplicação Educativa Catedrática • Interativa • Funcional</div>
+  <div class="autor">João Pedro Fernandes Semedo</div>
+</header>
+
+<nav id="nav">
+  <button onclick="mostrar('inicio')" class="active">Início</button>
+  <button onclick="mostrar('logica')">Lógica Norteadora</button>
+  <button onclick="mostrar('conhecer')">Saber Conhecer</button>
+  <button onclick="mostrar('fazer')">Saber Fazer</button>
+  <button onclick="mostrar('ser')">Saber Ser</button>
+  <button onclick="mostrar('estar')">Saber Estar</button>
+  <button onclick="mostrar('simulacoes')">Simulações</button>
+  <button onclick="mostrar('desafios')">Desafios</button>
+  <button onclick="mostrar('eletroscopio')">Eletroscópio</button>
+  <button onclick="mostrar('quiz')">Quiz Final</button>
+</nav>
+
+<main>
+  <!-- ========== INÍCIO ========== -->
+  <section id="inicio" class="active">
+    <h2>Bem-vindo à Aplicação de Eletrostática</h2>
+    <p>Esta aplicação foi concebida segundo os <strong>quatro pilares da educação</strong> (UNESCO) e a abordagem pedagógica recomendada: <em>Problema/Curiosidade → Modelação → Instrumentação (do qualitativo ao quantitativo)</em>.</p>
+
+    <div class="pilares">
+      <div class="pilar">
+        <h4>Saber Conhecer</h4>
+        <p>Fundamentos teóricos, princípios, quantização e mecanismos de eletrização.</p>
+      </div>
+      <div class="pilar">
+        <h4>Saber Fazer</h4>
+        <p>Exercícios, cálculos, simulações e aplicação prática.</p>
+      </div>
+      <div class="pilar">
+        <h4>Saber Ser</h4>
+        <p>Ética científica, honestidade intelectual e espírito crítico.</p>
+      </div>
+      <div class="pilar">
+        <h4>Saber Estar</h4>
+        <p>Trabalho colaborativo, responsabilidade social e cidadania científica.</p>
+      </div>
+    </div>
+
+    <div class="objetivo">
+      <strong>Objetivo Geral:</strong> Compreender, modelar e instrumentar os fenómenos eletrostáticos, desde a natureza da carga elétrica até aos processos de eletrização e ao eletroscópio, desenvolvendo competências científicas, práticas e humanas.
+    </div>
+
+    <h3>Mapa de Conteúdos</h3>
+    <ol>
+      <li>Noção de cargas elétricas (átomos, eletrões livres, condutores, isolantes, semicondutores)</li>
+      <li>Carga elétrica elementar e quantização</li>
+      <li>Princípios da eletrostática (atração/repulsão e conservação da carga)</li>
+      <li>Processos de eletrização: atrito, contacto e indução</li>
+      <li>O eletroscópio – tipos, funcionamento e importância</li>
+    </ol>
+
+    <div class="aviso">
+      <strong>Como estudar com esta app:</strong> Comece sempre pela <em>Lógica Norteadora</em>. Depois avance para Saber Conhecer → Simulações → Saber Fazer → Desafios.
+    </div>
+  </section>
+
+  <!-- ========== LÓGICA NORTEADORA ========== -->
+  <section id="logica">
+    <h2>Lógica Norteadora para o Aluno</h2>
+
+    <div class="logica-box">
+      <h3>Sequência pedagógica recomendada</h3>
+      <p>Em vez de começar pela definição, partimos de um <strong>problema real</strong> ou de uma <strong>curiosidade</strong>, construímos um <strong>modelo</strong> e só depois instrumentamos (do qualitativo ao quantitativo).</p>
+    </div>
+
+    <div class="passo-ped">
+      <div class="passo-num">1</div>
+      <div>
+        <strong>Problema / Curiosidade</strong><br>
+        “Por que razão o cabelo se levanta quando se esfrega um balão?” ou “Por que razão sentimos um choque ao tocar na maçaneta depois de andar no carpete?”
+      </div>
+    </div>
+    <div class="passo-ped">
+      <div class="passo-num">2</div>
+      <div>
+        <strong>Observação qualitativa</strong><br>
+        Descrever o que se vê/sente sem números: atração, repulsão, transferência de “algo”.
+      </div>
+    </div>
+    <div class="passo-ped">
+      <div class="passo-num">3</div>
+      <div>
+        <strong>Modelação</strong><br>
+        Propor um modelo simples: “existem duas espécies de carga; iguais repelem-se, opostas atraem-se; a carga conserva-se”.
+      </div>
+    </div>
+    <div class="passo-ped">
+      <div class="passo-num">4</div>
+      <div>
+        <strong>Instrumentação qualitativa</strong><br>
+        Usar o eletroscópio (ou simulações) para “ver” a carga e o seu sinal.
+      </div>
+    </div>
+    <div class="passo-ped">
+      <div class="passo-num">5</div>
+      <div>
+        <strong>Instrumentação quantitativa</strong><br>
+        Medir ou calcular valores (Lei de Coulomb, quantização, divisão de cargas no contacto).
+      </div>
+    </div>
+    <div class="passo-ped">
+      <div class="passo-num">6</div>
+      <div>
+        <strong>Validação e melhoria do modelo</strong><br>
+        Confrontar previsões com novas experiências. Se o modelo falhar, refiná-lo.
+      </div>
+    </div>
+
+    <h3>Perguntas-guia que o aluno deve fazer sempre</h3>
+    <ul>
+      <li>Que fenómeno estou a observar?</li>
+      <li>Que modelo simples o explica?</li>
+      <li>Como posso testar esse modelo (qualitativa e quantitativamente)?</li>
+      <li>A carga total do sistema isolado manteve-se?</li>
+      <li>Os eletrões moveram-se ou os protões?</li>
+    </ul>
+
+    <div class="exemplo">
+      <strong>Exemplo de percurso completo:</strong><br>
+      Curiosidade (balão e cabelo) → Modelo (transferência de eletrões por atrito) → Instrumentação qualitativa (eletroscópio) → Quantificação (estimar ordem de grandeza da carga) → Aplicação (explicar outros fenómenos do quotidiano).
+    </div>
+  </section>
+
+  <!-- ========== SABER CONHECER ========== -->
+  <section id="conhecer">
+    <h2>Saber Conhecer — Fundamentos Teóricos</h2>
+
+    <div class="objetivo">
+      <strong>Objetivos específicos:</strong>
+      <ul>
+        <li>Explicar a origem da carga elétrica a partir da estrutura atómica.</li>
+        <li>Distinguir condutores, isolantes e semicondutores.</li>
+        <li>Enunciar a quantização da carga e o valor da carga elementar.</li>
+        <li>Aplicar os princípios de atração/repulsão e conservação da carga.</li>
+        <li>Descrever os três processos de eletrização e o funcionamento do eletroscópio.</li>
+      </ul>
+    </div>
+
+    <h3>1. Noção de Cargas Elétricas</h3>
+    <p>Toda a matéria é constituída por <strong>átomos</strong>. Cada átomo possui:</p>
+    <ul>
+      <li><strong>Núcleo</strong>: protões (carga positiva, +e) e neutrões (carga nula).</li>
+      <li><strong>Nuvem eletrónica</strong>: eletrões (carga negativa, –e).</li>
+    </ul>
+    <p>A carga elétrica é uma <span class="destaque">propriedade fundamental</span> dos protões e dos eletrões. Os neutrões são eletricamente neutros.</p>
+    <p>Os fenómenos elétricos quotidianos resultam quase exclusivamente do <strong>movimento dos eletrões</strong> (e não dos protões), porque os eletrões são muito menos massivos e estão menos ligados ao núcleo.</p>
+
+    <h4>Eletrões livres, condutores, isolantes e semicondutores</h4>
+    <ul>
+      <li><strong>Condutores</strong> (metais, soluções iónicas, grafite): possuem eletrões de valência pouco ligados (eletrões livres) que se movem facilmente.</li>
+      <li><strong>Isolantes</strong> (vidro, borracha, plástico, madeira seca): eletrões fortemente ligados; não conduzem corrente significativa.</li>
+      <li><strong>Semicondutores</strong> (silício, germânio): conduta intermédia, fortemente dependente da temperatura e de impurezas (dopagem).</li>
+    </ul>
+
+    <h4>Corpos neutros e corpos eletrizados</h4>
+    <p>Um corpo está <strong>eletricamente neutro</strong> quando o número total de protões é igual ao número total de eletrões.</p>
+    <p>Um corpo fica <strong>eletrizado</strong> quando há excesso ou falta de eletrões:</p>
+    <ul>
+      <li>Excesso de eletrões → carga negativa.</li>
+      <li>Falta de eletrões → carga positiva.</li>
+    </ul>
+
+    <h3>2. Carga Elétrica Elementar</h3>
+    <p>A menor quantidade de carga elétrica livremente existente na natureza é a <strong>carga elementar</strong>:</p>
+    <div class="formula">e = 1,602 × 10<sup>−19</sup> C</div>
+    <p>Qualquer carga elétrica de um corpo macroscópico é um <strong>múltiplo inteiro</strong> da carga elementar:</p>
+    <div class="formula">Q = n · e &nbsp;&nbsp;(n ∈ ℤ)</div>
+    <p>Este facto denomina-se <strong>quantização da carga elétrica</strong>.</p>
+
+    <h3>3. Princípios da Eletrostática</h3>
+    <h4>3.1 Atrações e repulsões</h4>
+    <ul>
+      <li>Cargas de sinais iguais → <strong>repulsão</strong>.</li>
+      <li>Cargas de sinais opostos → <strong>atração</strong>.</li>
+    </ul>
+    <p>A força entre duas cargas pontuais é dada pela Lei de Coulomb (em módulo):</p>
+    <div class="formula">F = k · |q₁ q₂| / r² &nbsp;&nbsp;&nbsp; k = 9,0 × 10⁹ N·m²/C²</div>
+
+    <h4>3.2 Conservação da carga elétrica</h4>
+    <p>Num <strong>sistema isolado</strong> (sem troca de carga com o exterior), a carga elétrica total permanece constante. A carga não se cria nem se destrói: apenas se redistribui.</p>
+    <p><em>Sistema isolado neste contexto</em>: conjunto de corpos que não trocam eletrões com o meio exterior.</p>
+
+    <h3>4. Processos de Eletrização</h3>
+
+    <h4>4.1 Eletrização por atrito (triboeletricidade)</h4>
+    <p><strong>Conceito:</strong> transferência de eletrões entre dois corpos isolantes (ou um isolante e um condutor) quando são esfregados.</p>
+    <p><strong>Mecanismo:</strong> o material com maior afinidade eletrónica “rouba” eletrões ao outro.</p>
+    <p><strong>Carga final:</strong> os dois corpos ficam com cargas iguais em valor absoluto e de sinais opostos.</p>
+    <p><strong>Série triboelétrica</strong> (ordem aproximada de tendência a ceder eletrões → receber eletrões):</p>
+    <p>Pele humana → cabelo → vidro → náilon → lã → seda → algodão → borracha → PVC → teflon</p>
+    <div class="exemplo">
+      <strong>Exemplo clássico:</strong> Esfregar uma régua de plástico no cabelo. A régua fica negativa; o cabelo fica positivo.
+    </div>
+
+    <h4>4.2 Eletrização por contacto</h4>
+    <p><strong>Conceito:</strong> transferência de carga quando um corpo carregado toca num corpo neutro (ou noutro carregado), ambos condutores.</p>
+    <p>Após o contacto, as cargas redistribuem-se de acordo com as capacidades (para esferas iguais, a carga total divide-se igualmente).</p>
+    <ul>
+      <li><strong>2 corpos iguais:</strong> carga final de cada um = Q_total / 2</li>
+      <li><strong>3 corpos iguais:</strong> Q_total / 3</li>
+      <li><strong>n corpos iguais:</strong> Q_total / n</li>
+    </ul>
+    <div class="exemplo">
+      <strong>Exemplo:</strong> Esfera A com +6 µC toca esfera B neutra (iguais). Após separação: cada uma com +3 µC.
+    </div>
+
+    <h4>4.3 Eletrização por indução eletrostática</h4>
+    <p><strong>Conceito:</strong> separação de cargas num condutor neutro provocada pela aproximação de um corpo carregado (indutor), sem contacto.</p>
+    <p><strong>Mecanismo (indutor positivo):</strong></p>
+    <ol>
+      <li>O indutor (+) aproxima-se → eletrões do induzido são atraídos para o lado mais próximo.</li>
+      <li>O lado próximo fica negativo; o lado oposto fica positivo (polarização).</li>
+      <li>Se se ligar o induzido à terra, eletrões sobem da terra para neutralizar o lado positivo.</li>
+      <li>Ao desligar a terra e depois afastar o indutor, o induzido fica permanentemente negativo.</li>
+    </ol>
+    <p><strong>Mecanismo (indutor negativo):</strong> os eletrões do induzido são repelidos. Com ligação à terra, eletrões descem para a terra. O induzido fica positivo.</p>
+    <p><strong>Indutor</strong> = corpo que provoca a indução; <strong>Induzido</strong> = corpo que fica polarizado/carregado.</p>
+
+    <h3>5. O Eletroscópio</h3>
+    <p><strong>Conceito:</strong> instrumento que deteta a presença e o sinal aproximado de carga elétrica.</p>
+    <p><strong>Tipos principais:</strong> eletroscópio de folhas de ouro, de agulha (quadrante) e digitais.</p>
+    <p><strong>Funcionamento (folhas):</strong> a carga espalha-se pelas folhas → folhas com a mesma carga repelem-se e abrem-se.</p>
+    <p><strong>Importância:</strong> instrumento histórico (séc. XVIII) e pedagógico essencial.</p>
+  </section>
+
+  <!-- ========== SABER FAZER ========== -->
+  <section id="fazer">
+    <h2>Saber Fazer — Exercícios e Aplicação</h2>
+
+    <div class="objetivo">
+      <strong>Objetivo:</strong> Aplicar os conceitos teóricos a situações concretas, realizar cálculos e interpretar resultados, seguindo a lógica problema → modelo → instrumentação.
+    </div>
+
+    <h3>Exercício 1 — Quantização da carga</h3>
+    <div class="exercicio">
+      <p>Um corpo possui 2,4 × 10¹³ eletrões em excesso. Qual é a sua carga elétrica?</p>
+      <p>Dados: e = 1,6 × 10⁻¹⁹ C</p>
+      <button class="btn" onclick="resolverEx(1)">Ver resolução</button>
+      <div id="res1" class="feedback"></div>
+    </div>
+
+    <h3>Exercício 2 — Conservação da carga (contacto de 3 esferas)</h3>
+    <div class="exercicio">
+      <p>Três esferas condutoras idênticas A, B e C. Inicialmente: A = +9 µC, B = –3 µC, C = neutra. Faz-se contacto sucessivo A-B e depois B-C. Quais as cargas finais?</p>
+      <button class="btn" onclick="resolverEx(2)">Ver resolução</button>
+      <div id="res2" class="feedback"></div>
+    </div>
+
+    <h3>Exercício 3 — Indução com ligação à terra (indutor negativo)</h3>
+    <div class="exercicio">
+      <p>Uma esfera condutora neutra é induzida por um bastão <strong>negativamente</strong> carregado. Enquanto o bastão está próximo, liga-se a esfera à terra e depois desliga-se. Qual o sinal da carga final da esfera? Justifique.</p>
+      <button class="btn" onclick="resolverEx(3)">Ver resolução</button>
+      <div id="res3" class="feedback"></div>
+    </div>
+
+    <h3>Exercício 4 — Série triboelétrica e indução no papel</h3>
+    <div class="exercicio">
+      <p>Esfrega-se um pente de plástico no cabelo seco. O pente atrai pequenos pedaços de papel. Explique o fenómeno completo (incluindo o papel).</p>
+      <button class="btn" onclick="resolverEx(4)">Ver resolução</button>
+      <div id="res4" class="feedback"></div>
+    </div>
+
+    <h3>Exercício 5 — Contacto de 4 esferas</h3>
+    <div class="exercicio">
+      <p>Quatro esferas idênticas: A = +12 µC, B = –4 µC, C = +8 µC, D = neutra. Contactam-se todas simultaneamente e depois separam-se. Qual a carga de cada uma?</p>
+      <button class="btn" onclick="resolverEx(5)">Ver resolução</button>
+      <div id="res5" class="feedback"></div>
+    </div>
+
+    <h3>Exercício 6 — Número de eletrões transferidos</h3>
+    <div class="exercicio">
+      <p>Uma esfera adquire carga de +3,2 × 10⁻⁶ C por contacto. Quantos eletrões foram transferidos e em que sentido?</p>
+      <button class="btn" onclick="resolverEx(6)">Ver resolução</button>
+      <div id="res6" class="feedback"></div>
+    </div>
+
+    <h3>Exercício 7 — Lei de Coulomb (cálculo simples)</h3>
+    <div class="exercicio">
+      <p>Duas cargas pontuais q₁ = +2 µC e q₂ = –3 µC estão separadas por 30 cm no vácuo. Calcule o módulo da força eletrostática e indique se é atração ou repulsão.</p>
+      <button class="btn" onclick="resolverEx(7)">Ver resolução</button>
+      <div id="res7" class="feedback"></div>
+    </div>
+
+    <h3>Exercício 8 — Sistema isolado e conservação</h3>
+    <div class="exercicio">
+      <p>Num sistema isolado há três corpos com cargas +5 µC, –2 µC e +1 µC. Após várias transferências internas, um dos corpos fica com +4 µC e outro com –3 µC. Qual a carga do terceiro?</p>
+      <button class="btn" onclick="resolverEx(8)">Ver resolução</button>
+      <div id="res8" class="feedback"></div>
+    </div>
+
+    <h3>Tabela de Referência Rápida</h3>
+    <table class="tabela">
+      <tr><th>Processo</th><th>Contacto?</th><th>Sinais finais</th><th>Requer condutor?</th></tr>
+      <tr><td>Atrito</td><td>Sim (esfregar)</td><td>Opostos</td><td>Não (isolantes)</td></tr>
+      <tr><td>Contacto</td><td>Sim</td><td>Mesmo sinal (redistribuídos)</td><td>Sim</td></tr>
+      <tr><td>Indução (com terra)</td><td>Não</td><td>Oposto ao indutor</td><td>Sim</td></tr>
+    </table>
+  </section>
+
+  <!-- ========== SABER SER ========== -->
+  <section id="ser">
+    <h2>Saber Ser — Formação do Carácter Científico</h2>
+
+    <div class="objetivo">
+      <strong>Objetivo:</strong> Desenvolver honestidade intelectual, espírito crítico, rigor e humildade científica.
+    </div>
+
+    <h3>Valores a cultivar neste módulo</h3>
+    <ul>
+      <li><strong>Rigor:</strong> Nunca afirmar que “a carga se cria” ou que “os protões se movem facilmente nos sólidos”.</li>
+      <li><strong>Honestidade:</strong> Ao realizar experiências, registar o que realmente se observa, mesmo que contradiga a expectativa.</li>
+      <li><strong>Espírito crítico:</strong> Questionar modelos simplificados (ex.: “a carga está só na superfície” – verdadeiro para condutores em equilíbrio).</li>
+      <li><strong>Humildade:</strong> Reconhecer que a eletrostática clássica é uma aproximação; a realidade quântica é mais profunda.</li>
+    </ul>
+
+    <div class="desafio">
+      <h4>Reflexão pessoal</h4>
+      <p>Escreva (ou pense) durante 3 minutos:</p>
+      <p>“Por que razão a maioria das pessoas acredita que a eletricidade ‘vem da tomada’ e não dos eletrões que já existem na matéria?”</p>
+    </div>
+
+    <h3>Ética experimental</h3>
+    <p>Ao manipular cargas elevadas (máquinas de Van de Graaff, por exemplo), o cientista deve proteger-se e proteger os outros. A curiosidade não justifica o risco desnecessário.</p>
+  </section>
+
+  <!-- ========== SABER ESTAR ========== -->
+  <section id="estar">
+    <h2>Saber Estar — Cidadania Científica e Colaboração</h2>
+
+    <div class="objetivo">
+      <strong>Objetivo:</strong> Aprender a trabalhar em equipa, comunicar ciência e assumir responsabilidade social.
+    </div>
+
+    <h3>Trabalho colaborativo sugerido</h3>
+    <ol>
+      <li>Em grupos de 3–4: construir um eletroscópio caseiro com frasco de vidro, arame e folhas de alumínio.</li>
+      <li>Cada membro regista observações de forma independente.</li>
+      <li>Confrontar resultados e chegar a um consenso científico.</li>
+      <li>Apresentar à turma a explicação do funcionamento usando apenas linguagem precisa.</li>
+    </ol>
+
+    <h3>Responsabilidade social</h3>
+    <p>Compreender a eletrostática permite:</p>
+    <ul>
+      <li>Explicar fenómenos do quotidiano (choques ao tocar maçanetas, atracção de roupa).</li>
+      <li>Compreender o funcionamento de precipitadores eletrostáticos (controlo da poluição).</li>
+      <li>Entender a importância da ligação à terra em instalações elétricas (segurança).</li>
+    </ul>
+
+    <div class="desafio">
+      <h4>Desafio de cidadania</h4>
+      <p>Proponha uma ação concreta na sua escola ou comunidade para reduzir o desperdício de energia elétrica, fundamentando-a com o conhecimento de que a corrente elétrica é movimento de cargas.</p>
+    </div>
+  </section>
+
+  <!-- ========== SIMULAÇÕES ========== -->
+  <section id="simulacoes">
+    <h2>Simulações Interativas</h2>
+    <p class="aviso">Nas simulações, observe sempre o sentido das forças (setas) e valide o modelo que construiu na Lógica Norteadora.</p>
+
+    <h3>1. Atração e Repulsão de Cargas (com setas de força)</h3>
+    <p>Toque/clique para adicionar cargas. Arraste para mover. As <strong>setas amarelas</strong> mostram o sentido e a intensidade relativa das forças.</p>
+    <div class="canvas-wrap">
+      <canvas id="canvasCoulomb" width="700" height="400"></canvas>
+    </div>
+    <div class="controles">
+      <button class="btn btn-vermelho" onclick="addCarga(+1)">+ Positiva</button>
+      <button class="btn" style="background:#3182ce" onclick="addCarga(-1)">− Negativa</button>
+      <button class="btn btn-verde" onclick="limparCargas()">Limpar</button>
+    </div>
+    <p style="text-align:center; font-size:0.85rem; color:#4a5568;">
+      Setas amarelas = força • Vermelho = repulsão • Verde = atração
+    </p>
+
+    <h3>2. Eletrização por Contacto (2 esferas)</h3>
+    <p>Defina as cargas iniciais e simule o contacto.</p>
+    <div class="controles">
+      <span>Carga A: <input type="number" id="cargaA" value="6"> µC</span>
+      <span>Carga B: <input type="number" id="cargaB" value="0"> µC</span>
+      <button class="btn btn-ouro" onclick="simularContacto()">Simular Contacto</button>
+    </div>
+    <div id="resultadoContacto" class="exemplo" style="display:none;"></div>
+
+    <h3>3. Indução Eletrostática (carga positiva ou negativa)</h3>
+    <p>Escolha o sinal do indutor e avance passo a passo.</p>
+    <div class="controles">
+      <label><input type="radio" name="sinalIndutor" value="1" checked onchange="reiniciarInducao()"> Indutor (+)</label>
+      <label><input type="radio" name="sinalIndutor" value="-1" onchange="reiniciarInducao()"> Indutor (−)</label>
+    </div>
+    <div class="canvas-wrap">
+      <canvas id="canvasInducao" width="700" height="320"></canvas>
+    </div>
+    <div class="controles">
+      <button class="btn" onclick="passoInducao(1)">1. Aproximar</button>
+      <button class="btn" onclick="passoInducao(2)">2. Ligar terra</button>
+      <button class="btn" onclick="passoInducao(3)">3. Desligar</button>
+      <button class="btn" onclick="passoInducao(4)">4. Afastar</button>
+      <button class="btn btn-verde" onclick="passoInducao(0)">Reiniciar</button>
+    </div>
+    <p id="textoInducao" style="text-align:center; font-weight:600; margin-top:0.5rem; font-size:0.92rem;"></p>
+  </section>
+
+  <!-- ========== DESAFIOS ========== -->
+  <section id="desafios">
+    <h2>Desafios Progressivos</h2>
+
+    <div class="desafio">
+      <h4>Desafio Nível 1 — Fundamentação</h4>
+      <p>Explique, em no máximo 5 frases, por que razão os protões não participam tipicamente nos fenómenos de eletrização dos sólidos.</p>
+      <button class="btn" onclick="toggleResposta('d1')">Mostrar resposta modelo</button>
+      <div id="d1" class="feedback" style="display:none;">
+        Os protões estão no núcleo, fortemente ligados pela interação forte. A energia necessária para os deslocar é enormemente superior à energia térmica ou mecânica disponível em processos quotidianos. Os eletrões, sendo muito menos massivos e situados nas camadas externas, podem ser transferidos com energias relativamente baixas.
+      </div>
+    </div>
+
+    <div class="desafio">
+      <h4>Desafio Nível 2 — Cálculo e Conservação</h4>
+      <p>Quatro esferas idênticas. A = +12 µC, B = –4 µC, C = +8 µC, D = neutra. Contactam-se todas simultaneamente e depois separam-se. Qual a carga de cada uma?</p>
+      <button class="btn" onclick="toggleResposta('d2')">Mostrar resposta</button>
+      <div id="d2" class="feedback" style="display:none;">
+        Carga total = 12 − 4 + 8 + 0 = +16 µC. Dividida por 4 → cada esfera fica com +4 µC.
+      </div>
+    </div>
+
+    <div class="desafio">
+      <h4>Desafio Nível 3 — Indução avançada</h4>
+      <p>Um indutor positivo aproxima-se de duas esferas condutoras neutras que estão em contacto entre si. Depois separa-se as esferas (ainda com o indutor presente) e só depois se afasta o indutor. Quais os sinais finais das duas esferas?</p>
+      <button class="btn" onclick="toggleResposta('d3')">Mostrar resposta</button>
+      <div id="d3" class="feedback" style="display:none;">
+        A esfera mais próxima do indutor fica negativa; a mais afastada fica positiva. (Separação de cargas por indução, depois isolamento.)
+      </div>
+    </div>
+
+    <div class="desafio">
+      <h4>Desafio Nível 4 — Síntese e Criatividade</h4>
+      <p>Projete mentalmente um experimento caseiro que demonstre simultaneamente a eletrização por atrito e a indução, usando apenas materiais do dia a dia. Descreva o procedimento e o que se deve observar.</p>
+    </div>
+  </section>
+
+  <!-- ========== ELETROSCÓPIO ========== -->
+  <section id="eletroscopio">
+    <h2>O Eletroscópio — Estudo Detalhado</h2>
+
+    <h3>Representação esquemática (Eletroscópio de folhas)</h3>
+    <svg class="eletroscopio-svg" viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
+      <rect x="40" y="80" width="120" height="160" rx="8" fill="#e2e8f0" stroke="#4a5568" stroke-width="3"/>
+      <rect x="35" y="70" width="130" height="15" fill="#2d3748"/>
+      <line x1="100" y1="30" x2="100" y2="180" stroke="#718096" stroke-width="4"/>
+      <circle cx="100" cy="25" r="18" fill="#a0aec0" stroke="#4a5568" stroke-width="2"/>
+      <line x1="100" y1="180" x2="70" y2="240" stroke="#d69e2e" stroke-width="3" id="folhaEsq"/>
+      <line x1="100" y1="180" x2="130" y2="240" stroke="#d69e2e" stroke-width="3" id="folhaDir"/>
+      <text x="100" y="270" text-anchor="middle" font-size="12" fill="#2d3748">Folhas de ouro/alumínio</text>
+    </svg>
+
+    <div class="controles">
+      <button class="btn btn-vermelho" onclick="abrirFolhas(1)">Carregar (+)</button>
+      <button class="btn" style="background:#3182ce" onclick="abrirFolhas(-1)">Carregar (−)</button>
+      <button class="btn btn-verde" onclick="abrirFolhas(0)">Descarregar</button>
+    </div>
+    <p id="estadoEletro" style="text-align:center; font-weight:600;"></p>
+
+    <h3>Tipos de eletroscópio</h3>
+    <table class="tabela">
+      <tr><th>Tipo</th><th>Princípio</th><th>Vantagem</th></tr>
+      <tr><td>Folhas de ouro</td><td>Repulsão entre folhas</td><td>Muito sensível, clássico</td></tr>
+      <tr><td>De agulha / quadrante</td><td>Deflexão de uma agulha</td><td>Leitura mais fácil</td></tr>
+      <tr><td>Digital</td><td>Sensor de campo elétrico</td><td>Quantitativo, preciso</td></tr>
+    </table>
+
+    <h3>Importância histórica e pedagógica</h3>
+    <p>O eletroscópio permitiu a Coulomb e outros cientistas do séc. XVIII quantificar a eletricidade e estabelecer a lei do inverso do quadrado. Ainda hoje é o instrumento ideal para o aluno “ver” a carga elétrica.</p>
+
+    <div class="exemplo">
+      <strong>Como usar para determinar o sinal:</strong><br>
+      1. Carregar o eletroscópio com carga conhecida (ex.: por atrito com um material da série triboelétrica).<br>
+      2. Aproximar o corpo desconhecido. Se as folhas se abrirem mais → mesmo sinal. Se se fecharem → sinal oposto.
+    </div>
+  </section>
+
+  <!-- ========== QUIZ FINAL ========== -->
+  <section id="quiz">
+    <h2>Quiz Final — Avaliação Formativa</h2>
+
+    <div class="objetivo">
+      <strong>Objetivo:</strong> Avaliar a compreensão global da eletrostática de forma diversificada, com feedback imediato, pontuação e recomendações personalizadas.
+    </div>
+
+    <div id="quizIntro">
+      <p>Este quiz contém <strong>12 questões</strong> de tipos diferentes (escolha múltipla, verdadeiro/falso, cálculo e interpretação). Responda com atenção. No final receberá:</p>
+      <ul>
+        <li>Pontuação quantitativa (0–100%)</li>
+        <li>Avaliação qualitativa</li>
+        <li>Observações por domínio</li>
+        <li>Recomendações de estudo personalizadas</li>
+      </ul>
+      <div class="controles">
+        <button class="btn btn-ouro" onclick="iniciarQuiz()">Começar o Quiz</button>
+      </div>
+    </div>
+
+    <div id="quizArea" style="display:none;">
+      <div id="quizProgresso" style="margin-bottom:1rem; font-weight:600; color:#2c5282;"></div>
+      <div id="quizPergunta" class="exercicio"></div>
+      <div id="quizOpcoes"></div>
+      <div id="quizFeedback" class="feedback" style="display:none;"></div>
+      <div class="controles" id="quizBotoes">
+        <button class="btn" id="btnConfirmar" onclick="confirmarResposta()">Confirmar resposta</button>
+        <button class="btn btn-verde" id="btnProxima" style="display:none;" onclick="proximaPergunta()">Próxima →</button>
+      </div>
+    </div>
+
+    <div id="quizResultado" style="display:none;">
+      <h3>Resultado do Quiz</h3>
+      <div id="quizScoreBox" class="logica-box"></div>
+      <div id="quizAvaliacao"></div>
+      <div id="quizRecomendacoes" class="exemplo"></div>
+      <div class="controles">
+        <button class="btn btn-ouro" onclick="reiniciarQuiz()">Refazer o Quiz</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Aplicação educativa criada no nome de <strong>João Pedro Fernandes Semedo</strong><br>
+  Baseada nos quatro pilares da educação • Abordagem Problema → Modelação → Instrumentação<br>
+  © Uso pedagógico livre
+</footer>
+
+<script>
+  // Navegação
+  function mostrar(id) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => {
+      b.classList.remove('active');
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'")) {
+        b.classList.add('active');
+      }
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Exercícios
+  const resolucoes = {
+    1: `<strong>Resolução:</strong><br>
+      Número de eletrões em excesso n = 2,4 × 10¹³<br>
+      Q = n × (−e) = 2,4 × 10¹³ × (−1,6 × 10⁻¹⁹) = −3,84 × 10⁻⁶ C = −3,84 µC<br>
+      O corpo está carregado negativamente.`,
+    2: `<strong>Resolução:</strong><br>
+      1. Contacto A-B: carga total = 9 + (−3) = +6 µC → cada uma fica com +3 µC.<br>
+      2. Contacto B-C: B = +3 µC, C = 0 → total = +3 µC → cada uma fica com +1,5 µC.<br>
+      <strong>Finais:</strong> A = +3 µC; B = +1,5 µC; C = +1,5 µC.`,
+    3: `<strong>Resolução:</strong><br>
+      O bastão negativo repele os eletrões da esfera. Quando se liga à terra, esses eletrões descem para a terra.<br>
+      Ao desligar a terra, a esfera fica com falta de eletrões → <strong>carga positiva</strong>.`,
+    4: `<strong>Resolução:</strong><br>
+      1. Por atrito, o pente (plástico) ganha eletrões do cabelo → pente negativo.<br>
+      2. O pente negativo polariza o papel (indução): o lado próximo do papel fica positivo.<br>
+      3. Há atração entre o pente negativo e a face positiva do papel. O papel é leve → é levantado.`,
+    5: `<strong>Resolução:</strong><br>
+      Carga total = 12 − 4 + 8 + 0 = +16 µC.<br>
+      Dividida por 4 esferas iguais → cada uma fica com <strong>+4 µC</strong>.`,
+    6: `<strong>Resolução:</strong><br>
+      Q = +3,2 × 10⁻⁶ C = n × e → n = Q / e = 3,2 × 10⁻⁶ / 1,6 × 10⁻¹⁹ = 2 × 10¹³ eletrões.<br>
+      Como a carga ficou positiva, os eletrões saíram da esfera (foram transferidos para fora).`,
+    7: `<strong>Resolução:</strong><br>
+      F = k |q₁ q₂| / r² = 9×10⁹ × (2×10⁻⁶)(3×10⁻⁶) / (0,30)² = 9×10⁹ × 6×10⁻¹² / 0,09 = 0,60 N.<br>
+      Sinais opostos → <strong>atração</strong>.`,
+    8: `<strong>Resolução:</strong><br>
+      Carga total inicial = 5 − 2 + 1 = +4 µC (conserva-se).<br>
+      Após: +4 + (−3) + Q₃ = +4 → Q₃ = +3 µC.`
+  };
+
+  function resolverEx(n) {
+    const el = document.getElementById('res' + n);
+    el.className = 'feedback certo';
+    el.innerHTML = resolucoes[n];
+  }
+
+  function toggleResposta(id) {
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    el.className = 'feedback certo';
+  }
+
+  // ========== SIMULAÇÃO COULOMB COM SETAS (responsivo + touch) ==========
+  const canvas = document.getElementById('canvasCoulomb');
+  const ctx = canvas.getContext('2d');
+  let cargas = [];
+  let dragging = null;
+
+  function resizeCanvasCoulomb() {
+    const wrap = canvas.parentElement;
+    const w = Math.min(wrap.clientWidth || 700, 700);
+    const h = Math.round(w * 0.57);
+    canvas.width = w;
+    canvas.height = h;
+    desenharCoulomb();
+  }
+
+  function addCarga(sinal) {
+    const w = canvas.width, h = canvas.height;
+    cargas.push({
+      x: w * 0.2 + Math.random() * w * 0.6,
+      y: h * 0.2 + Math.random() * h * 0.6,
+      q: sinal,
+      r: Math.max(14, Math.min(20, w * 0.028))
+    });
+    desenharCoulomb();
+  }
+  function limparCargas() {
+    cargas = [];
+    desenharCoulomb();
+  }
+
+  function desenharSeta(x1, y1, x2, y2, cor) {
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.sqrt(dx*dx + dy*dy) || 1;
+    const ux = dx / len, uy = dy / len;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = cor;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    const head = 10;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - head*ux + head*0.4*uy, y2 - head*uy - head*0.4*ux);
+    ctx.lineTo(x2 - head*ux - head*0.4*uy, y2 - head*uy + head*0.4*ux);
+    ctx.closePath();
+    ctx.fillStyle = cor;
+    ctx.fill();
+  }
+
+  function desenharCoulomb() {
+    const w = canvas.width, h = canvas.height;
+    ctx.fillStyle = '#1a202c';
+    ctx.fillRect(0, 0, w, h);
+
+    const forcas = cargas.map(() => ({ fx: 0, fy: 0 }));
+    const escalaF = (w / 700) * 120000;
+
+    for (let i = 0; i < cargas.length; i++) {
+      for (let j = i+1; j < cargas.length; j++) {
+        const a = cargas[i], b = cargas[j];
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+        const f = (a.q * b.q) / (dist*dist) * escalaF;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = f > 0 ? 'rgba(245,101,101,0.35)' : 'rgba(72,187,120,0.35)';
+        ctx.lineWidth = Math.min(Math.abs(f)/8, 5);
+        ctx.stroke();
+        const fx = f * (dx / dist);
+        const fy = f * (dy / dist);
+        forcas[i].fx -= fx;
+        forcas[i].fy -= fy;
+        forcas[j].fx += fx;
+        forcas[j].fy += fy;
+      }
+    }
+
+    cargas.forEach((c, i) => {
+      const f = forcas[i];
+      const mag = Math.sqrt(f.fx*f.fx + f.fy*f.fy);
+      if (mag > 2) {
+        const escala = Math.min(mag * 0.4, w * 0.08);
+        const ux = f.fx / mag, uy = f.fy / mag;
+        const x2 = c.x + ux * (c.r + 8 + escala);
+        const y2 = c.y + uy * (c.r + 8 + escala);
+        desenharSeta(c.x + ux*(c.r+4), c.y + uy*(c.r+4), x2, y2, '#f6e05e');
+      }
+    });
+
+    cargas.forEach(c => {
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, c.r, 0, Math.PI*2);
+      ctx.fillStyle = c.q > 0 ? '#fc8181' : '#63b3ed';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold ' + Math.max(14, c.r) + 'px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(c.q > 0 ? '+' : '−', c.x, c.y);
+    });
+  }
+
+  function getCanvasPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+      x: (clientX - rect.left) * (canvas.width / rect.width),
+      y: (clientY - rect.top) * (canvas.height / rect.height)
+    };
+  }
+
+  function startDrag(e) {
+    e.preventDefault();
+    const pos = getCanvasPos(e);
+    for (let c of cargas) {
+      if (Math.hypot(c.x - pos.x, c.y - pos.y) < c.r + 12) {
+        dragging = c;
+        break;
+      }
+    }
+  }
+  function moveDrag(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    const pos = getCanvasPos(e);
+    dragging.x = pos.x;
+    dragging.y = pos.y;
+    desenharCoulomb();
+  }
+  function endDrag() { dragging = null; }
+
+  canvas.addEventListener('mousedown', startDrag);
+  canvas.addEventListener('mousemove', moveDrag);
+  canvas.addEventListener('mouseup', endDrag);
+  canvas.addEventListener('mouseleave', endDrag);
+  canvas.addEventListener('touchstart', startDrag, {passive: false});
+  canvas.addEventListener('touchmove', moveDrag, {passive: false});
+  canvas.addEventListener('touchend', endDrag);
+  canvas.addEventListener('touchcancel', endDrag);
+
+  window.addEventListener('resize', resizeCanvasCoulomb);
+  resizeCanvasCoulomb();
+
+  // ========== CONTACTO ==========
+  function simularContacto() {
+    const a = parseFloat(document.getElementById('cargaA').value) || 0;
+    const b = parseFloat(document.getElementById('cargaB').value) || 0;
+    const total = a + b;
+    const final = total / 2;
+    const res = document.getElementById('resultadoContacto');
+    res.style.display = 'block';
+    res.innerHTML = `<strong>Resultado:</strong> Carga total = ${total.toFixed(2)} µC<br>
+      Após contacto e separação (esferas iguais): cada uma fica com <strong>${final.toFixed(2)} µC</strong>.`;
+  }
+
+  // ========== INDUÇÃO (positiva e negativa) — responsivo ==========
+  const canvasInd = document.getElementById('canvasInducao');
+  const ctxInd = canvasInd.getContext('2d');
+  let passo = 0;
+  let sinalIndutor = 1;
+
+  function resizeCanvasInducao() {
+    const wrap = canvasInd.parentElement;
+    const w = Math.min(wrap.clientWidth || 700, 700);
+    const h = Math.round(w * 0.46);
+    canvasInd.width = w;
+    canvasInd.height = h;
+    desenharInducao();
+  }
+
+  function getSinalIndutor() {
+    const radios = document.getElementsByName('sinalIndutor');
+    for (let r of radios) if (r.checked) return parseInt(r.value);
+    return 1;
+  }
+
+  function reiniciarInducao() {
+    passo = 0;
+    desenharInducao();
+    document.getElementById('textoInducao').textContent = 'Estado inicial: esfera neutra. Escolha o sinal do indutor e avance.';
+  }
+
+  function passoInducao(p) {
+    passo = p;
+    sinalIndutor = getSinalIndutor();
+    desenharInducao();
+    const pos = sinalIndutor > 0;
+    const textos = [
+      'Estado inicial: esfera neutra.',
+      pos
+        ? 'Indutor (+) aproxima-se → polarização (eletrões atraídos para a esquerda).'
+        : 'Indutor (−) aproxima-se → polarização (eletrões repelidos para a direita).',
+      pos
+        ? 'Ligação à terra: eletrões sobem da terra para neutralizar o lado positivo.'
+        : 'Ligação à terra: eletrões descem para a terra (repelidos pelo indutor).',
+      pos
+        ? 'Terra desligada: esfera ficou com excesso de eletrões (carga negativa).'
+        : 'Terra desligada: esfera ficou com falta de eletrões (carga positiva).',
+      pos
+        ? 'Indutor afastado: a esfera permanece negativamente carregada.'
+        : 'Indutor afastado: a esfera permanece positivamente carregada.'
+    ];
+    document.getElementById('textoInducao').textContent = textos[p];
+  }
+
+  function desenharInducao() {
+    sinalIndutor = getSinalIndutor();
+    const w = canvasInd.width, h = canvasInd.height;
+    const sx = w / 700, sy = h / 320;
+    ctxInd.fillStyle = '#1a202c';
+    ctxInd.fillRect(0, 0, w, h);
+
+    // Indutor
+    const indX = (passo >= 1 && passo < 4 ? 120 : 40) * sx;
+    const indY = 160 * sy;
+    const indR = 30 * Math.min(sx, sy);
+    ctxInd.beginPath();
+    ctxInd.arc(indX, indY, indR, 0, Math.PI*2);
+    ctxInd.fillStyle = sinalIndutor > 0 ? '#fc8181' : '#63b3ed';
+    ctxInd.fill();
+    ctxInd.fillStyle = '#fff';
+    ctxInd.font = 'bold ' + Math.round(18 * Math.min(sx,sy)) + 'px sans-serif';
+    ctxInd.textAlign = 'center';
+    ctxInd.textBaseline = 'middle';
+    ctxInd.fillText(sinalIndutor > 0 ? '+' : '−', indX, indY);
+
+    // Esfera induzida
+    const esfX = 400 * sx, esfY = 160 * sy, esfR = 50 * Math.min(sx, sy);
+    ctxInd.beginPath();
+    ctxInd.arc(esfX, esfY, esfR, 0, Math.PI*2);
+    ctxInd.fillStyle = '#4a5568';
+    ctxInd.fill();
+    ctxInd.strokeStyle = '#a0aec0';
+    ctxInd.lineWidth = 3 * Math.min(sx, sy);
+    ctxInd.stroke();
+
+    const rCarga = 5 * Math.min(sx, sy);
+
+    if (passo === 0) {
+      for (let i = 0; i < 6; i++) {
+        ctxInd.beginPath();
+        ctxInd.arc((380 + i*8) * sx, 150 * sy, rCarga * 0.85, 0, Math.PI*2);
+        ctxInd.fillStyle = '#63b3ed';
+        ctxInd.fill();
+      }
+    } else if (passo === 1) {
+      if (sinalIndutor > 0) {
+        for (let i = 0; i < 5; i++) {
+          ctxInd.beginPath();
+          ctxInd.arc(360 * sx, (140 + i*10) * sy, rCarga, 0, Math.PI*2);
+          ctxInd.fillStyle = '#63b3ed';
+          ctxInd.fill();
+        }
+        ctxInd.fillStyle = '#fc8181';
+        ctxInd.font = 'bold ' + Math.round(15 * Math.min(sx,sy)) + 'px sans-serif';
+        ctxInd.fillText('+', 430 * sx, 165 * sy);
+      } else {
+        ctxInd.fillStyle = '#fc8181';
+        ctxInd.font = 'bold ' + Math.round(15 * Math.min(sx,sy)) + 'px sans-serif';
+        ctxInd.fillText('+', 370 * sx, 165 * sy);
+        for (let i = 0; i < 5; i++) {
+          ctxInd.beginPath();
+          ctxInd.arc(430 * sx, (140 + i*10) * sy, rCarga, 0, Math.PI*2);
+          ctxInd.fillStyle = '#63b3ed';
+          ctxInd.fill();
+        }
+      }
+    } else if (passo === 2) {
+      ctxInd.strokeStyle = '#68d391';
+      ctxInd.lineWidth = 3 * Math.min(sx, sy);
+      ctxInd.beginPath();
+      ctxInd.moveTo(esfX, 210 * sy);
+      ctxInd.lineTo(esfX, Math.min(h - 10, 280 * sy));
+      ctxInd.stroke();
+      ctxInd.fillStyle = '#68d391';
+      ctxInd.font = Math.round(11 * Math.min(sx,sy)) + 'px sans-serif';
+      ctxInd.fillText('TERRA', esfX, Math.min(h - 5, 295 * sy));
+      if (sinalIndutor > 0) {
+        for (let i = 0; i < 7; i++) {
+          ctxInd.beginPath();
+          ctxInd.arc(360 * sx, (135 + i*8) * sy, rCarga, 0, Math.PI*2);
+          ctxInd.fillStyle = '#63b3ed';
+          ctxInd.fill();
+        }
+      } else {
+        for (let i = 0; i < 3; i++) {
+          ctxInd.beginPath();
+          ctxInd.arc(430 * sx, (145 + i*12) * sy, rCarga, 0, Math.PI*2);
+          ctxInd.fillStyle = '#63b3ed';
+          ctxInd.fill();
+        }
+      }
+    } else if (passo >= 3) {
+      const finalNeg = sinalIndutor > 0;
+      for (let i = 0; i < 8; i++) {
+        const ang = i * Math.PI / 4;
+        ctxInd.beginPath();
+        ctxInd.arc(esfX + Math.cos(ang) * 25 * Math.min(sx,sy), esfY + Math.sin(ang) * 25 * Math.min(sx,sy), rCarga, 0, Math.PI*2);
+        ctxInd.fillStyle = finalNeg ? '#63b3ed' : '#fc8181';
+        ctxInd.fill();
+      }
+      ctxInd.fillStyle = finalNeg ? '#63b3ed' : '#fc8181';
+      ctxInd.font = 'bold ' + Math.round(13 * Math.min(sx,sy)) + 'px sans-serif';
+      ctxInd.fillText(finalNeg ? '−' : '+', esfX, esfY);
+    }
+  }
+  window.addEventListener('resize', resizeCanvasInducao);
+  resizeCanvasInducao();
+  reiniciarInducao();
+
+  // ========== ELETROSCÓPIO ==========
+  function abrirFolhas(sinal) {
+    const esq = document.getElementById('folhaEsq');
+    const dir = document.getElementById('folhaDir');
+    const txt = document.getElementById('estadoEletro');
+    if (sinal === 0) {
+      esq.setAttribute('x2', '85');
+      esq.setAttribute('y2', '230');
+      dir.setAttribute('x2', '115');
+      dir.setAttribute('y2', '230');
+      txt.textContent = 'Eletroscópio descarregado (folhas juntas)';
+    } else {
+      esq.setAttribute('x2', '55');
+      esq.setAttribute('y2', '250');
+      dir.setAttribute('x2', '145');
+      dir.setAttribute('y2', '250');
+      txt.textContent = sinal > 0 ? 'Carregado positivamente — folhas abertas' : 'Carregado negativamente — folhas abertas';
+    }
+  }
+
+  // ========== QUIZ FINAL ==========
+  const quizQuestoes = [
+    {
+      tipo: 'mc',
+      dominio: 'estrutura',
+      pergunta: 'Os fenómenos elétricos do quotidiano resultam principalmente do movimento de:',
+      opcoes: ['Protões', 'Neutrões', 'Eletrões', 'Núcleos inteiros'],
+      correta: 2,
+      explicacao: 'Os eletrões são muito menos massivos e estão nas camadas externas, por isso movem-se com facilidade. Os protões estão fortemente ligados no núcleo.'
+    },
+    {
+      tipo: 'vf',
+      dominio: 'estrutura',
+      pergunta: 'Um corpo eletricamente neutro tem o mesmo número de protões e de eletrões.',
+      opcoes: ['Verdadeiro', 'Falso'],
+      correta: 0,
+      explicacao: 'Correto. A neutralidade significa igualdade entre carga positiva (protões) e carga negativa (eletrões).'
+    },
+    {
+      tipo: 'mc',
+      dominio: 'quantizacao',
+      pergunta: 'A carga elétrica de um corpo macroscópico é sempre:',
+      opcoes: ['Um número real qualquer', 'Um múltiplo inteiro da carga elementar e', 'Um múltiplo de 1 C', 'Independente dos eletrões'],
+      correta: 1,
+      explicacao: 'A carga é quantizada: Q = n·e, onde n é um número inteiro (positivo ou negativo).'
+    },
+    {
+      tipo: 'calc',
+      dominio: 'quantizacao',
+      pergunta: 'Um corpo tem 5,0 × 10¹² eletrões em excesso. Qual a sua carga? (e = 1,6 × 10⁻¹⁹ C). Escolha o valor mais próximo.',
+      opcoes: ['−8,0 × 10⁻⁷ C', '−3,2 × 10⁻⁶ C', '+8,0 × 10⁻⁷ C', '−1,6 × 10⁻⁶ C'],
+      correta: 0,
+      explicacao: 'Q = n × (−e) = 5,0×10¹² × (−1,6×10⁻¹⁹) = −8,0×10⁻⁷ C.'
+    },
+    {
+      tipo: 'mc',
+      dominio: 'principios',
+      pergunta: 'Duas cargas de sinais iguais:',
+      opcoes: ['Atraem-se', 'Repelem-se', 'Não interagem', 'Atraem-se só se forem positivas'],
+      correta: 1,
+      explicacao: 'Cargas de mesmo sinal repelem-se; cargas de sinais opostos atraem-se.'
+    },
+    {
+      tipo: 'vf',
+      dominio: 'principios',
+      pergunta: 'Num sistema isolado a carga elétrica total pode aumentar se houver atrito entre os corpos.',
+      opcoes: ['Verdadeiro', 'Falso'],
+      correta: 1,
+      explicacao: 'Falso. A carga total de um sistema isolado conserva-se sempre. O atrito apenas transfere eletrões de um corpo para outro.'
+    },
+    {
+      tipo: 'mc',
+      dominio: 'atrito',
+      pergunta: 'Na eletrização por atrito, os dois corpos ficam com:',
+      opcoes: ['A mesma carga (mesmo sinal e valor)', 'Cargas iguais em valor absoluto e de sinais opostos', 'Um carregado e outro neutro', 'Cargas aleatórias'],
+      correta: 1,
+      explicacao: 'Os eletrões transferidos de um corpo para o outro fazem com que as cargas finais sejam iguais em módulo e de sinais contrários.'
+    },
+    {
+      tipo: 'mc',
+      dominio: 'contacto',
+      pergunta: 'Duas esferas condutoras idênticas: A = +8 µC e B = neutra. Após contacto e separação, cada uma fica com:',
+      opcoes: ['+8 µC e 0', '+4 µC e +4 µC', '+8 µC e +8 µC', '0 e 0'],
+      correta: 1,
+      explicacao: 'A carga total (+8 µC) divide-se igualmente → +4 µC em cada uma.'
+    },
+    {
+      tipo: 'calc',
+      dominio: 'contacto',
+      pergunta: 'Três esferas iguais: A = +9 µC, B = −3 µC, C = 0. Contacto A-B e depois B-C. Carga final de C?',
+      opcoes: ['+3 µC', '+1,5 µC', '+2 µC', '0'],
+      correta: 1,
+      explicacao: 'A-B: total +6 µC → cada +3 µC. B-C: total +3 µC → cada +1,5 µC. Logo C = +1,5 µC.'
+    },
+    {
+      tipo: 'mc',
+      dominio: 'inducao',
+      pergunta: 'Na eletrização por indução com ligação à terra, usando um indutor negativo, o induzido fica com carga:',
+      opcoes: ['Negativa', 'Positiva', 'Nula', 'Igual à do indutor'],
+      correta: 1,
+      explicacao: 'O indutor negativo repele eletrões. Com a terra ligada, eletrões saem para a terra. O induzido fica positivo.'
+    },
+    {
+      tipo: 'mc',
+      dominio: 'eletroscopio',
+      pergunta: 'Num eletroscópio de folhas, as folhas abrem-se porque:',
+      opcoes: ['Têm cargas de sinais opostos', 'Têm a mesma carga e repelem-se', 'São atraídas pela terra', 'Perdem massa'],
+      correta: 1,
+      explicacao: 'A carga espalha-se pelas folhas. Como ficam com a mesma carga, repelem-se e abrem-se.'
+    },
+    {
+      tipo: 'mc',
+      dominio: 'sintese',
+      pergunta: 'Qual a sequência pedagógica mais recomendada para estudar eletrostática?',
+      opcoes: [
+        'Definir conceitos → memorizar fórmulas → fazer exercícios',
+        'Problema/curiosidade → modelação → instrumentação (qualitativa → quantitativa)',
+        'Só simulações → depois teoria',
+        'Começar sempre pelo cálculo da Lei de Coulomb'
+      ],
+      correta: 1,
+      explicacao: 'A abordagem Problema → Modelo → Instrumentação (do qualitativo ao quantitativo) é a mais eficaz e alinhada com a investigação em educação em ciências.'
+    }
+  ];
+
+  let quizIndex = 0;
+  let quizAcertos = 0;
+  let quizRespostas = [];
+  let quizRespondida = false;
+
+  function iniciarQuiz() {
+    quizIndex = 0;
+    quizAcertos = 0;
+    quizRespostas = [];
+    quizRespondida = false;
+    document.getElementById('quizIntro').style.display = 'none';
+    document.getElementById('quizResultado').style.display = 'none';
+    document.getElementById('quizArea').style.display = 'block';
+    mostrarPergunta();
+  }
+
+  function mostrarPergunta() {
+    const q = quizQuestoes[quizIndex];
+    document.getElementById('quizProgresso').textContent = `Questão ${quizIndex + 1} de ${quizQuestoes.length}`;
+    document.getElementById('quizPergunta').innerHTML = `<strong>${q.pergunta}</strong>`;
+    const opcoesDiv = document.getElementById('quizOpcoes');
+    opcoesDiv.innerHTML = '';
+    q.opcoes.forEach((op, i) => {
+      const label = document.createElement('label');
+      label.style.display = 'block';
+      label.style.margin = '0.5rem 0';
+      label.style.padding = '0.6rem 1rem';
+      label.style.background = '#edf2f7';
+      label.style.borderRadius = '6px';
+      label.style.cursor = 'pointer';
+      label.innerHTML = `<input type="radio" name="quizOp" value="${i}" style="margin-right:0.6rem;"> ${op}`;
+      opcoesDiv.appendChild(label);
+    });
+    document.getElementById('quizFeedback').style.display = 'none';
+    document.getElementById('btnConfirmar').style.display = 'inline-block';
+    document.getElementById('btnProxima').style.display = 'none';
+    quizRespondida = false;
+  }
+
+  function confirmarResposta() {
+    if (quizRespondida) return;
+    const selecionado = document.querySelector('input[name="quizOp"]:checked');
+    if (!selecionado) {
+      alert('Selecione uma opção antes de confirmar.');
+      return;
+    }
+    quizRespondida = true;
+    const escolha = parseInt(selecionado.value);
+    const q = quizQuestoes[quizIndex];
+    const acertou = escolha === q.correta;
+    if (acertou) quizAcertos++;
+    quizRespostas.push({ dominio: q.dominio, acertou });
+
+    const fb = document.getElementById('quizFeedback');
+    fb.style.display = 'block';
+    fb.className = acertou ? 'feedback certo' : 'feedback errado';
+    fb.innerHTML = (acertou ? '✓ Correto! ' : '✗ Incorreto. ') + q.explicacao;
+
+    document.getElementById('btnConfirmar').style.display = 'none';
+    document.getElementById('btnProxima').style.display = 'inline-block';
+    if (quizIndex === quizQuestoes.length - 1) {
+      document.getElementById('btnProxima').textContent = 'Ver Resultado Final';
+    }
+  }
+
+  function proximaPergunta() {
+    if (quizIndex < quizQuestoes.length - 1) {
+      quizIndex++;
+      mostrarPergunta();
+    } else {
+      mostrarResultado();
+    }
+  }
+
+  function mostrarResultado() {
+    document.getElementById('quizArea').style.display = 'none';
+    document.getElementById('quizResultado').style.display = 'block';
+
+    const total = quizQuestoes.length;
+    const percent = Math.round((quizAcertos / total) * 100);
+
+    let nivel, cor, mensagem;
+    if (percent >= 90) {
+      nivel = 'Excelente';
+      cor = '#276749';
+      mensagem = 'Domínio sólido dos conceitos de eletrostática. Parabéns!';
+    } else if (percent >= 75) {
+      nivel = 'Bom';
+      cor = '#2f855a';
+      mensagem = 'Boa compreensão geral. Ainda há espaço para consolidar alguns pontos.';
+    } else if (percent >= 50) {
+      nivel = 'Satisfatório';
+      cor = '#c05621';
+      mensagem = 'Compreensão parcial. Recomenda-se rever os tópicos com mais erros.';
+    } else {
+      nivel = 'A melhorar';
+      cor = '#c53030';
+      mensagem = 'É importante reforçar os fundamentos. Volte à Lógica Norteadora e às simulações.';
+    }
+
+    document.getElementById('quizScoreBox').innerHTML = `
+      <h3 style="margin-top:0; color:${cor};">${nivel}</h3>
+      <p style="font-size:1.8rem; font-weight:bold; color:${cor};">${quizAcertos} / ${total} &nbsp;(&nbsp;${percent}%&nbsp;)</p>
+      <p>${mensagem}</p>
+    `;
+
+    // Análise por domínio
+    const dominios = {};
+    quizRespostas.forEach(r => {
+      if (!dominios[r.dominio]) dominios[r.dominio] = { acertos: 0, total: 0 };
+      dominios[r.dominio].total++;
+      if (r.acertou) dominios[r.dominio].acertos++;
+    });
+
+    const nomesDominio = {
+      estrutura: 'Estrutura atómica e natureza da carga',
+      quantizacao: 'Quantização e carga elementar',
+      principios: 'Princípios (atração/repulsão e conservação)',
+      atrito: 'Eletrização por atrito',
+      contacto: 'Eletrização por contacto',
+      inducao: 'Eletrização por indução',
+      eletroscopio: 'Eletroscópio',
+      sintese: 'Síntese e abordagem pedagógica'
+    };
+
+    let htmlAval = '<h4>Desempenho por domínio</h4><ul>';
+    for (const d in dominios) {
+      const p = Math.round((dominios[d].acertos / dominios[d].total) * 100);
+      htmlAval += `<li><strong>${nomesDominio[d] || d}:</strong> ${dominios[d].acertos}/${dominios[d].total} (${p}%)</li>`;
+    }
+    htmlAval += '</ul>';
+    document.getElementById('quizAvaliacao').innerHTML = htmlAval;
+
+    // Recomendações
+    let recs = '<h4>Recomendações personalizadas</h4><ul>';
+    if (percent >= 90) {
+      recs += '<li>Pode avançar para aplicações mais complexas (campo elétrico, potencial).</li>';
+      recs += '<li>Experimente construir um eletroscópio real e validar as previsões.</li>';
+    } else {
+      const fracos = Object.keys(dominios).filter(d => (dominios[d].acertos / dominios[d].total) < 0.7);
+      if (fracos.includes('estrutura') || fracos.includes('quantizacao')) {
+        recs += '<li>Reveja a secção <em>Saber Conhecer</em> sobre estrutura atómica e quantização.</li>';
+      }
+      if (fracos.includes('principios')) {
+        recs += '<li>Pratique a simulação de Coulomb e relembre a conservação da carga.</li>';
+      }
+      if (fracos.includes('atrito') || fracos.includes('contacto') || fracos.includes('inducao')) {
+        recs += '<li>Refaça as simulações de contacto e de indução (positiva e negativa).</li>';
+      }
+      if (fracos.includes('eletroscopio')) {
+        recs += '<li>Volte à secção do Eletroscópio e observe o funcionamento das folhas.</li>';
+      }
+      if (fracos.includes('sintese')) {
+        recs += '<li>Leia novamente a <em>Lógica Norteadora</em> e tente aplicar a sequência Problema → Modelo → Instrumentação.</li>';
+      }
+      if (fracos.length === 0) {
+        recs += '<li>Revise os exercícios do Saber Fazer e os desafios progressivos.</li>';
+      }
+    }
+    recs += '<li>Use sempre a sequência: curiosidade → modelo → teste qualitativo → quantificação.</li>';
+    recs += '</ul>';
+    document.getElementById('quizRecomendacoes').innerHTML = recs;
+  }
+
+  function reiniciarQuiz() {
+    document.getElementById('quizResultado').style.display = 'none';
+    document.getElementById('quizIntro').style.display = 'block';
+  }
+</script>
+</body>
+</html>
